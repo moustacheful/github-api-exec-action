@@ -24,11 +24,13 @@ jobs:
           git config --global user.email '${{github.actor}}@users.noreply.github.com'  
       
       - name: Commit
+        continue-on-error: true
         run: |
           git add dist/*
           git commit -m 'chore(build): Update built files.'
 
       - name: Push
+        continue-on-error: true
         run: git push origin HEAD
 
   test-exec:
