@@ -21,7 +21,7 @@ jobs:
   create-pr:
     runs-on: ubuntu-latest
     steps:
-      - uses: moustacheful/github-api-exec-action@v1
+      - uses: moustacheful/github-api-exec-action@v0
         with:
           # This will add the repo name and owner to the payload
           withRepo: true

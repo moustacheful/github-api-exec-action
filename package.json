@@ -1,11 +1,11 @@
 {
-  "name": "typescript-action",
+  "name": "github-api-exec-action",
   "version": "0.0.0",
   "private": true,
-  "description": "TypeScript template action",
+  "description": "A utility action for executing commands on GitHub's API.",
   "main": "lib/main.js",
   "scripts": {
-    "build": "npx tsc",
+    "build": "tsc",
     "format": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
     "lint": "eslint src/**/*.ts",
@@ -22,7 +22,7 @@
     "node",
     "setup"
   ],
-  "author": "YourNameOrOrganization",
+  "author": "moustacheful",
   "license": "MIT",
   "dependencies": {
     "@actions/core": "^1.2.0",
