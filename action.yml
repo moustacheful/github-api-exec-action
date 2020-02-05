@@ -1,10 +1,21 @@
-name: 'Your name here'
-description: 'Provide a description here'
-author: 'Your name or organization here'
+name: 'GitHub API exec action'
+description: 'Executes commands on with GitHub''s API.'
+author: 'Daniel Acuna'
 inputs:
-  myInput:              # change this
-    description: 'input description here'
-    default: 'default value if applicable'
+  command:
+    description: 'Command to execute, (e.g: `pulls.create`), see https://octokit.github.io/rest.js/ for available commands'
+    required: true
+  payload:
+    description: 'The payload to send along with the command, see https://octokit.github.io/rest.js/ for structure'
+    default: "{}"
+  withRepo:
+    description: 'Whether we should include the current repo information (`context.repo`) to the aforementioned payload'
+    default: false
+  resultPath:
+    description: "The path to obtain from the result, if needed. i.e.: labels.0.id, if missing, the output is the whole json, which you can later obtain via the [steps context](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/contexts-and-expression-syntax-for-github-actions#steps-context) and parse using tools such as jq"
+outputs:
+  result:
+    description: "The result of the API call, optionally scoped to resultPath, if any"
 runs:
   using: 'node12'
   main: 'dist/index.js'

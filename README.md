@@ -1,117 +1,50 @@
-<p align="center">
-  <a href="https://github.com/actions/typescript-action/actions"><img alt="typescript-action status" src="https://github.com/actions/typescript-action/workflows/build-test/badge.svg"></a>
-</p>
+# Github API exec action
 
-# Create a JavaScript Action using TypeScript
+Execute arbitrary commands on Github's API, using octokit, such as creating pull requests.
 
-Use this template to bootstrap the creation of a JavaScript action.:rocket:
+This just passes a payload to the JS Octokit library. If the command doesn't exist, it will fail. Other than that, it _should_ let you to do whatever you need with the GitHub API without having to create a new action.
 
-This template includes compilication support, tests, a validation workflow, publishing, and versioning guidance.  
+**Disclaimer**: I'm not responsible if you nuke your whole repository/account/existence. Be responsible and create a scoped PAT that can only do what you need it to do!
 
-If you are new, there's also a simpler introduction.  See the [Hello World JavaScript Action](https://github.com/actions/hello-world-javascript-action)
+If you do use `secrets.GITHUB_TOKEN` keep in mind the breadth of the [permissions given to this token](https://help.github.com/en/actions/automating-your-workflow-with-github-actions/authenticating-with-the-github_token#about-the-github_token-secret)
 
-## Create an action from this template
+### Why?
 
-Click the `Use this Template` and provide the new repo details for your action
+Needed a quick way to execute GitHub's API commands, and GitHub's CLI doesn't seem to provide all possible commands (i.e. creating a PR, adding labels,etc.). This might work best for "prototyping" purposes, for which you can later create a proper action.
 
-## Code in Master
+### Examples
 
-Install the dependencies  
-```bash
-$ npm install
+Creating a pull request:
+
+```yml
+jobs:
+  create-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: moustacheful/github-api-exec-action@v1
+        with:
+          # This will add the repo name and owner to the payload
+          withRepo: true
+          # See https://octokit.github.io/rest.js/ for available commands
+          command: pulls.create 
+          # You can use interpolation here!
+          payload: > 
+            {
+              "title": "Test PR by ${{ github.actor }}",
+              "head": "feature/some-feature",
+              "base": "master"
+            }
+          # The path of the result, this uses dot notation to access the data, for instance
+          # for labels, we could use labels.0.name  to get the first label's name. If you want 
+          # the whole response, just dont include this, and the result will be the whole json
+          # You can later acess this data using the steps context 
+          # https://help.github.com/en/actions/automating-your-workflow-with-github-actions/contexts-and-expression-syntax-for-github-actions#steps-context
+          resultPath: 'number' 
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 ```
 
-Build the typescript
-```bash
-$ npm run build
-```
+### TODO:
 
-Run the tests :heavy_check_mark:  
-```bash
-$ npm test
-
- PASS  ./index.test.js
-  ✓ throws invalid number (3ms)
-  ✓ wait 500 ms (504ms)
-  ✓ test runs (95ms)
-
-...
-```
-
-## Change action.yml
-
-The action.yml contains defines the inputs and output for your action.
-
-Update the action.yml with your name, description, inputs and outputs for your action.
-
-See the [documentation](https://help.github.com/en/articles/metadata-syntax-for-github-actions)
-
-## Change the Code
-
-Most toolkit and CI/CD operations involve async operations so the action is run in an async function.
-
-```javascript
-import * as core from '@actions/core';
-...
-
-async function run() {
-  try { 
-      ...
-  } 
-  catch (error) {
-    core.setFailed(error.message);
-  }
-}
-
-run()
-```
-
-See the [toolkit documentation](https://github.com/actions/toolkit/blob/master/README.md#packages) for the various packages.
-
-## Publish to a distribution branch
-
-Actions are run from GitHub repos.  We will create a releases branch and only checkin production modules (core in this case). 
-
-Comment out node_modules in .gitignore and create a releases/v1 branch
-```bash
-# comment out in distribution branches
-# node_modules/
-```
-
-```bash
-$ git checkout -b releases/v1
-$ git commit -a -m "prod dependencies"
-```
-
-```bash
-$ npm prune --production
-$ git add node_modules
-$ git commit -a -m "prod dependencies"
-$ git push origin releases/v1
-```
-
-Your action is now published! :rocket: 
-
-See the [versioning documentation](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md)
-
-## Validate
-
-You can now validate the action by referencing the releases/v1 branch
-
-```yaml
-uses: actions/typescript-action@releases/v1
-with:
-  milliseconds: 1000
-```
-
-See the [actions tab](https://github.com/actions/javascript-action/actions) for runs of this action! :rocket:
-
-## Usage:
-
-After testing you can [create a v1 tag](https://github.com/actions/toolkit/blob/master/docs/action-versioning.md) to reference the stable and tested action
-
-```yaml
-uses: actions/typescript-action@v1
-with:
-  milliseconds: 1000
-```
+- Tests!
+- Common derived data, maybe? (e.g. PR id -- stuff that might not be immeditely available without parsing first)

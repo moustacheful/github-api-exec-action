@@ -5,7 +5,7 @@
   "description": "TypeScript template action",
   "main": "lib/main.js",
   "scripts": {
-    "build": "tsc",
+    "build": "npx tsc",
     "format": "prettier --write **/*.ts",
     "format-check": "prettier --check **/*.ts",
     "lint": "eslint src/**/*.ts",
@@ -25,10 +25,13 @@
   "author": "YourNameOrOrganization",
   "license": "MIT",
   "dependencies": {
-    "@actions/core": "^1.2.0"
+    "@actions/core": "^1.2.0",
+    "@actions/github": "^2.1.0",
+    "lodash": "^4.17.15"
   },
   "devDependencies": {
     "@types/jest": "^24.0.23",
+    "@types/lodash": "^4.14.149",
     "@types/node": "^12.7.12",
     "@typescript-eslint/parser": "^2.8.0",
     "@zeit/ncc": "^0.20.5",
