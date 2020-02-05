@@ -1,4 +1,7 @@
 name: 'GitHub API exec action'
+branding:
+  icon: 'cloud-lightning'
+  color: 'orange'
 description: 'Executes commands on with GitHub''s API.'
 author: 'Daniel Acuna'
 inputs:
